@@ -23,22 +23,26 @@ SELECT last_name AS Фамилия
 FROM employee_1
 GROUP BY Фамилия;
 SELECT * FROM employee_1;
-SELECT * FROM employee_1 WHERE age>30 AND age <50;
+SELECT * FROM employee_1 WHERE age BETWEEN 30 AND 50;
 SELECT * FROM employee_1
 ORDER BY last_name DESC , last_name;
-SELECT * FROM employee_1 WHERE first_name>4;
+SELECT * FROM employee_1 WHERE length(first_name)>4;
 UPDATE employee_1 SET first_name = 'pavel' , last_name = 'ertaev' , age = 31 WHERE id=2;
 UPDATE employee_1 SET first_name = 'anton' , last_name = 'antonov' , age = 40 WHERE id=4;
 UPDATE employee_1 SET  age = 31 WHERE id=1;
 UPDATE employee_1 SET  gender = 'men' WHERE id=4;
+/*Запрос на суммарный возраст для всех имен*/
 SELECT first_name AS имя,
        SUM(age)
 FROM employee_1 GROUP BY имя;
+/*Запрос на возврат сотрудника с минимальным возрастом*/
 SELECT * FROM employee_1
 WHERE age = (
     SELECT     min(age)
     FROM employee_1 );
-SELECT * FROM employee_1
-WHERE age = (
-    SELECT     max(age)
-    FROM employee_1   );
+/*Возврат имени и максимального возраста для неуникальных имен*/
+SELECT first_name AS Имя,
+       MAX(age) AS Макс_возраст
+FROM employee_1 GROUP BY Имя  HAVING count(first_name) > 1
+                            ORDER BY Макс_возраст;
+
