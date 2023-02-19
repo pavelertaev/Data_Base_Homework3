@@ -44,5 +44,81 @@ WHERE age = (
 SELECT first_name AS Имя,
        MAX(age) AS Макс_возраст
 FROM employee_1 GROUP BY Имя  HAVING count(first_name) > 1
-                            ORDER BY Макс_возраст;
+                            ORDER BY Макс_возраст
+/*Домашнее задание по теме работа с несколькими таблицами*/
+CREATE TABLE IF NOT EXISTS city
+(
+    city_id   SERIAL PRIMARY KEY,
+    city_name VARCHAR(50) NOT NULL
+);
 
+
+ALTER TABLE employee_1
+    ADD COLUMN city_id varchar(50);
+
+ALTER TABLE employee_1
+    ALTER COLUMN city_id TYPE INTEGER USING city_id::integer;
+
+
+ALTER TABLE employee_1
+    ADD FOREIGN KEY (city_id) REFERENCES city (city_id);
+
+
+INSERT INTO city
+VALUES (1, 'Ivanovo'),
+       (2, 'Moscow'),
+       (3, 'Vladimir');
+
+UPDATE employee_1
+SET city_id=1
+WHERE id = 1;
+UPDATE employee_1
+SET city_id=2
+WHERE id = 2;
+UPDATE employee_1
+SET city_id=3
+WHERE id = 3;
+UPDATE employee_1
+SET city_id=1
+WHERE id = 4;
+UPDATE employee_1
+SET city_id=2
+WHERE id = 5;
+
+SELECT *
+FROM employee;
+
+
+SELECT first_name AS Имя,
+       last_name  AS Фамилия,
+       city_name
+
+FROM employee_1
+         INNER JOIN city ON employee_1.city_id = city.city_id
+ORDER BY Имя;
+
+INSERT INTO city
+VALUES (4, 'NullCity');
+
+
+SELECT city_name  AS Город,
+       first_name AS Имя,
+       last_name  AS Фамилия
+FROM employee_1
+         RIGHT JOIN city ON employee_1.city_id = city.city_id
+ORDER BY Город;
+
+
+SELECT city_name  AS Город,
+       first_name AS Имя,
+       last_name  AS Фамилия
+FROM employee_1
+         FULL OUTER JOIN city ON employee_1.city_id = city.city_id
+ORDER BY Город;
+
+
+SELECT first_name AS Имя,
+       city_name  AS Город
+FROM employee_1
+         LEFT JOIN city ON employee_1.city_id = city.city_id
+ORDER BY Город;
